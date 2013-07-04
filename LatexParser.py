@@ -27,6 +27,7 @@ class LatexParser:
 
     def __parseHeader(self, tex):
         for line in tex:
+            line = line.strip()
             if "\\documentclass" in line:
                 self.latexdoc.documentclass = self.__matchTeX("documentclass", line)
             elif "\\usepackage" in line:
@@ -36,6 +37,13 @@ class LatexParser:
                         self.latexdoc.packages[p] = None
                 else:
                     self.latexdoc.packages[packages] = config
+            else:
+                if line[0] == "\\":
+                    print "Unknown command: " + line
+                elif line[0] == "%":
+                    print "Comment: " + line
+                else:
+                    print "Deleted line: " + line
 
     def __parseContent(self, tex):
         for line in tex:
@@ -45,6 +53,13 @@ class LatexParser:
                 self.latexdoc.author = self.__matchTeX("author", line)
             elif "\\date" in line:
                 self.latexdoc.date = self.__matchTeX("date", line)
+            else:
+                if line[0] == "\\":
+                    print "Unknown command: " + line
+                elif line[0] == "%":
+                    print "Comment: " + line
+                else:
+                    print "Deleted line: " + line
 
     def __init__(self, tex):
         self.latexdoc = LatexDocument()
