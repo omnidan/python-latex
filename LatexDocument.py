@@ -1,5 +1,5 @@
 class LatexDocument:
-    def __init__(self, documentclass="report", packages={}, content="", title="", author="", date=""):
+    def __init__(self, documentclass=(), packages={}, content="", title="", author="", date=""):
         self.documentclass = documentclass
         self.packages = packages
         self.content = content

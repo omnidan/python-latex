@@ -27,9 +27,8 @@ class LatexParser:
 
     def __parseHeader(self, tex):
         for line in tex:
-            print line
             if "\\documentclass" in line:
-                print self.__matchTeX("documentclass", line)
+                self.latexdoc.documentclass = self.__matchTeX("documentclass", line)
             elif "\\usepackage" in line:
                 packages, config = self.__matchTeX("usepackage", line)
                 if config is None:
@@ -38,14 +37,28 @@ class LatexParser:
                 else:
                     self.latexdoc.packages[packages] = config
 
-
+    def __parseContent(self, tex):
+        for line in tex:
+            if "\\title" in line:
+                self.latexdoc.title = self.__matchTeX("title", line)
+            elif "\\author" in line:
+                self.latexdoc.author = self.__matchTeX("author", line)
+            elif "\\date" in line:
+                self.latexdoc.date = self.__matchTeX("date", line)
 
     def __init__(self, tex):
         self.latexdoc = LatexDocument()
         header, content = self.__parseDocument(tex)
+
         self.__parseHeader(header)
+        self.__parseContent(content)
+        print self.latexdoc
+        print self.latexdoc.author
+        print self.latexdoc.content
+        print self.latexdoc.date
+        print self.latexdoc.documentclass
         print self.latexdoc.packages
-        print content
+        print self.latexdoc.title
 
 
 if __name__ == "__main__":
