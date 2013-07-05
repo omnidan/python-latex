@@ -155,8 +155,8 @@ class LatexParser:
                 opt = p.group(2)
         else:
             cmd = p.group(1)
-            opt = p.group(2)
-            adopt = p.group(3)
+            adopt = p.group(2)
+            opt = p.group(3)
         if cmd is None:
             # couldn't parse, invalid latex command
             return False
