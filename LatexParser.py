@@ -25,7 +25,11 @@ class LatexCommand(LatexLine):
             additional_options = self.additional_options
 
         # parse options value
-        self.options = options.split(",")
+        if self.options is not None:
+            # TODO: This if/else block is just a workaround, find a better way to parse options
+            self.options = options.split(",")
+        else:
+            self.options = []
 
         # parse additional_options value
         if additional_options is None or additional_options == []:
@@ -159,8 +163,8 @@ class LatexParser:
         else:
             return LatexCommand(cmd, cmd, opt, adopt)
 
-    def __parseHeader(self, tex):
-        header = []
+    def __parse(self, tex):
+        buffer = []
         for line in tex:
             # firstly, strip the line to remove whitespace
             line = line.strip()
@@ -172,41 +176,28 @@ class LatexParser:
                     print "WARNING: Couldn't parse LaTeX command: " + line
                 else:
                     latex_command.parseOptions()
-                    header.append(latex_command)
+                    buffer.append(latex_command)
             elif line[0] == "%":
                 # remove first character from line and create the LatexComment object
-                header.append(LatexComment("".join(line[1:]).strip()))
+                buffer.append(LatexComment("".join(line[1:]).strip()))
             else:
                 # this is a normal text line
-                header.append(LatexText(line))
-        return header
-
-    def __parseContent(self, tex):
-        # TODO: Implement the new system here
-        for line in tex:
-            if "\\title" in line:
-                self.latexdoc.title = self.__matchTeX(line)
-            elif "\\author" in line:
-                self.latexdoc.author = self.__matchTeX(line)
-            elif "\\date" in line:
-                self.latexdoc.date = self.__matchTeX(line)
-            else:
-                if line[0] == "\\":
-                    print "Unknown command: " + line
-                elif line[0] == "%":
-                    print "Comment: " + line
-                else:
-                    print "Deleted line: " + line
+                buffer.append(LatexText(line))
+        return buffer
 
     def __init__(self, tex):
+        # parse document into header and content buffer
         header, content = self.__parseDocument(tex)
 
-        header_list = self.__parseHeader(header)
+        # parse buffers into objects
         ld = LatexDocument()
-        ld.setHeader(header_list)
+        ld.setHeader(self.__parse(header))
+        ld.setContent(self.__parse(content))
+
+        # return all LatexLines in a list
         print ld.getLines()
+        # return the whole document as a string
         print ld.getDocument()
-        #self.__parseContent(content)
 
 
 if __name__ == "__main__":
