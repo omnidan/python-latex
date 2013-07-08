@@ -8,6 +8,8 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
+# TODO: Check if the next line ia LatexText too and if yes, concatenate them
+
 import re
 from LatexDocument import LatexDocument
 from LatexLines import LatexCommand, LatexText, LatexComment
@@ -78,15 +80,15 @@ class LatexParser:
                 parse_buffer.append(LatexText(line))
         return parse_buffer
 
-    def getDocument(self):
+    def getResult(self):
         return self.__ld
 
-    def __init__(self, tex):
+    def __init__(self, tex, obj=LatexDocument):
         # parse document into header and content buffer
         header, content = self.__parseDocument(tex)
 
         # parse buffers into objects
-        self.__ld = LatexDocument()
+        self.__ld = obj()
         self.__ld.setHeader(self.__parse(header))
         self.__ld.setContent(self.__parse(content))
 
@@ -105,6 +107,6 @@ if __name__ == "__main__":
 
 \end{document}
     """)
-    ld = lp.getDocument()
+    ld = lp.getResult()
     print ld.getLines()
     print ld.getDocument()
