@@ -78,23 +78,20 @@ class LatexParser:
                 parse_buffer.append(LatexText(line))
         return parse_buffer
 
+    def getDocument(self):
+        return self.__ld
+
     def __init__(self, tex):
         # parse document into header and content buffer
         header, content = self.__parseDocument(tex)
 
         # parse buffers into objects
-        ld = LatexDocument()
-        ld.setHeader(self.__parse(header))
-        ld.setContent(self.__parse(content))
-
-        # return all LatexLines in a list
-        print ld.getLines()
-        # return the whole document as a string
-        print ld.getDocument()
-
+        self.__ld = LatexDocument()
+        self.__ld.setHeader(self.__parse(header))
+        self.__ld.setContent(self.__parse(content))
 
 if __name__ == "__main__":
-    LatexParser("""
+    lp = LatexParser("""
 \documentclass[11pt,a4paper,oneside]{report}
 
 \usepackage{pslatex,palatino,avant,graphicx,color}
@@ -108,3 +105,6 @@ if __name__ == "__main__":
 
 \end{document}
     """)
+    ld = lp.getDocument()
+    print ld.getLines()
+    print ld.getDocument()
