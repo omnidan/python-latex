@@ -67,5 +67,4 @@ odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
 \end{document}
     """, LatexBeautifier)
     ld = lp.getResult()
-    print ld.getLines()
     print ld.getDocument()
