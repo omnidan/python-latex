@@ -65,5 +65,10 @@ class LatexDocument:
             return False
 
     def __init__(self):
+        self.text_append_prefix = ""
+        self.text_append_suffix = ""
+        self.comment_prefix = "% "
+        self.comment_append_prefix = ""
+        self.comment_append_suffix = ""
         self.__lines_header = []
         self.__lines_content = []

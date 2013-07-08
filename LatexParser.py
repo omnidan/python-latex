@@ -8,8 +8,6 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-# TODO: Check if the next line ia LatexText too and if yes, concatenate them
-
 import re
 from LatexDocument import LatexDocument
 from LatexLines import LatexCommand, LatexText, LatexComment
@@ -74,16 +72,31 @@ class LatexParser:
                     parse_buffer.append(latex_command)
             elif line[0] == "%":
                 # remove first character from line and create the LatexComment object
-                parse_buffer.append(LatexComment("".join(line[1:]).strip()))
+                comment = "".join(line[1:]).strip()
+                if isinstance(self.__last_line, LatexComment):
+                    # last line was a LatexComment too, append to this object
+                    self.__last_line.append(comment)
+                else:
+                    # create new LatexComment object
+                    parse_buffer.append(LatexComment(comment, self.__ld.comment_prefix, self.__ld.comment_append_prefix, self.__ld.comment_append_suffix))
             else:
                 # this is a normal text line
-                parse_buffer.append(LatexText(line))
+                if isinstance(self.__last_line, LatexText):
+                    # last line was a LatexText too, append to this object
+                    self.__last_line.append(line)
+                else:
+                    # create new LatexText object
+                    parse_buffer.append(LatexText(line, self.__ld.text_append_prefix, self.__ld.text_append_suffix))
+            self.__last_line = parse_buffer[-1]
         return parse_buffer
 
     def getResult(self):
         return self.__ld
 
     def __init__(self, tex, obj=LatexDocument):
+        # init last_line variable
+        self.__last_line = None
+
         # parse document into header and content buffer
         header, content = self.__parseDocument(tex)
 

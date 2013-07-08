@@ -13,6 +13,15 @@ from LatexLines import LatexCommand, LatexText, LatexComment
 
 
 class LatexBeautifier(LatexDocument):
+    def __init__(self):
+        self.text_append_prefix = ""
+        self.text_append_suffix = "\n    "
+        self.comment_prefix = "% "
+        self.comment_append_prefix = " "
+        self.comment_append_suffix = ""
+        self.__lines_header = []
+        self.__lines_content = []
+
     def getDocument(self):
         """ Returns a string that contains the beautified/pretty printed document """
         document_buffer = ""
@@ -36,6 +45,9 @@ if __name__ == "__main__":
 \usepackage[margin=2cm]{geometry}
 
 % test
+% test
+% test
+% test
 
 \\begin{document}
 \\title{\color{red}Practical Typesetting}
@@ -54,4 +66,6 @@ odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
 
 \end{document}
     """, LatexBeautifier)
-    print lp.getResult().getDocument()
+    ld = lp.getResult()
+    print ld.getLines()
+    print ld.getDocument()

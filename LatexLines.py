@@ -59,14 +59,27 @@ class LatexText(LatexLine):
         """ Converts the LatexText object into a string and returns it """
         return str(self.text)
 
-    def __init__(self, text):
-        self.text = text
+    def append(self, text):
+        """ Appends string to LatexText object """
+        self.text += self.__append_prefix + str(text) + self.__append_suffix
+
+    def __init__(self, text, append_prefix="", append_suffix=""):
+        self.__append_prefix = str(append_prefix)
+        self.__append_suffix = str(append_suffix)
+        self.text = str(text)
 
 
 class LatexComment(LatexLine):
     def getString(self):
         """ Converts the LatexComment object into a latex comment string and returns it """
-        return str("%" + self.comment)
+        return str(self.__comment_prefix + self.comment)
 
-    def __init__(self, comment):
-        self.comment = comment
+    def append(self, comment):
+        """ Appends string to LatexComment object """
+        self.comment += self.__append_prefix + str(comment) + self.__append_suffix
+
+    def __init__(self, comment, comment_prefix="%", append_prefix="", append_suffix=""):
+        self.__comment_prefix = str(comment_prefix)
+        self.__append_prefix = str(append_prefix)
+        self.__append_suffix = str(append_suffix)
+        self.comment = str(comment)
