@@ -78,7 +78,8 @@ class LatexParser:
                     self.__last_line.append(comment)
                 else:
                     # create new LatexComment object
-                    parse_buffer.append(LatexComment(comment, self.__ld.comment_prefix, self.__ld.comment_append_prefix, self.__ld.comment_append_suffix))
+                    parse_buffer.append(LatexComment(comment, self.__ld.comment_prefix, self.__ld.comment_append_prefix,
+                                                     self.__ld.comment_append_suffix))
             else:
                 # this is a normal text line
                 if isinstance(self.__last_line, LatexText):

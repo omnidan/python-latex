@@ -14,13 +14,9 @@ from LatexLines import LatexCommand, LatexText, LatexComment
 
 class LatexBeautifier(LatexDocument):
     def __init__(self):
-        self.text_append_prefix = ""
+        LatexDocument.__init__(self)
         self.text_append_suffix = "\n    "
-        self.comment_prefix = "% "
         self.comment_append_prefix = " "
-        self.comment_append_suffix = ""
-        self.__lines_header = []
-        self.__lines_content = []
 
     def getDocument(self):
         """ Returns a string that contains the beautified/pretty printed document """
@@ -67,4 +63,6 @@ odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
 \end{document}
     """, LatexBeautifier)
     ld = lp.getResult()
+    for l in ld.getLines():
+        print l
     print ld.getDocument()
