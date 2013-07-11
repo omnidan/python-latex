@@ -11,7 +11,7 @@ LatexText:
     append_prefix: ""
 #    append_suffix: "\n    "
     append_suffix: ""
-    charlimit: 100
+    charlimit: 150
 
 LatexComment:
     indentation: "  "
