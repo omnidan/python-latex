@@ -10,24 +10,29 @@ __status__ = "Prototype"
 
 from LatexDocument import LatexDocument
 from LatexLines import LatexCommand, LatexText, LatexComment
+import yaml
 
 
 class LatexBeautifier(LatexDocument):
     def __init__(self):
         LatexDocument.__init__(self)
-        self.text_append_suffix = "\n    "
-        self.comment_append_prefix = " "
+        self.__config = yaml.load(open("pretty.ini", "r").read())
+        self.text_append_prefix = self.__config["LatexText"]["append_prefix"]
+        self.text_append_suffix = self.__config["LatexText"]["append_suffix"]
+        self.comment_prefix = self.__config["LatexComment"]["prefix"]
+        self.comment_append_prefix = self.__config["LatexComment"]["append_prefix"]
+        self.comment_append_suffix = self.__config["LatexComment"]["append_suffix"]
 
     def getDocument(self):
         """ Returns a string that contains the beautified/pretty printed document """
         document_buffer = ""
         for l in self.getLines():
             if isinstance(l, LatexCommand):
-                document_buffer += " "
+                document_buffer += self.__config["Indentation"]["LatexCommand"]
             elif isinstance(l, LatexText):
-                document_buffer += "    "
+                document_buffer += self.__config["Indentation"]["LatexText"]
             elif isinstance(l, LatexComment):
-                document_buffer += "  "
+                document_buffer += self.__config["Indentation"]["LatexComment"]
             document_buffer += l.getString()
             document_buffer += "\n\n"
         return str(document_buffer)
