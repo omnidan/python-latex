@@ -64,6 +64,23 @@ class LatexDocument:
         else:
             return False
 
+    def setHeaderLine(self, index, line):
+        """ Set a line with a specific index in the LatexDocument header list """
+        if not isinstance(line, LatexLine):
+            return False
+        else:
+            self.__lines_header[index] = line
+            return True
+
+    def setContentLine(self, index, line):
+        """ Set a line with a specific index in the LatexDocument content list """
+        if not isinstance(line, LatexLine):
+            return False
+        else:
+            self.__lines_content[index] = line
+            return True
+
+
     def __init__(self):
         self.text_append_prefix = ""
         self.text_append_suffix = ""

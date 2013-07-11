@@ -54,6 +54,11 @@ class LatexParser:
             # couldn't parse, invalid latex command
             return False
         else:
+            # TODO: maybe fix the regex instead of using this hack
+            if "{" in cmd:
+                real_cmd = cmd.split("{")
+                cmd = real_cmd[0]
+                opt = "{".join(real_cmd[1:]) + "{" + opt
             return LatexCommand(cmd, cmd, opt, adopt)
 
     def __parse(self, tex):
@@ -94,7 +99,7 @@ class LatexParser:
     def getResult(self):
         return self.__ld
 
-    def __init__(self, tex, obj=LatexDocument):
+    def __init__(self, tex, obj=None):
         # init last_line variable
         self.__last_line = None
 
@@ -102,7 +107,9 @@ class LatexParser:
         header, content = self.__parseDocument(tex)
 
         # parse buffers into objects
-        self.__ld = obj()
+        if obj is None:
+            obj = LatexDocument()
+        self.__ld = obj
         self.__ld.setHeader(self.__parse(header))
         self.__ld.setContent(self.__parse(content))
 

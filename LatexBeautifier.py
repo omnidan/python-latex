@@ -14,9 +14,9 @@ import yaml
 
 
 class LatexBeautifier(LatexDocument):
-    def __init__(self):
+    def __init__(self, config_file="pretty.yml"):
         LatexDocument.__init__(self)
-        self.__config = yaml.load(open("pretty.yml", "r").read())
+        self.__config = yaml.load(open(config_file, "r").read())
         self.text_append_prefix = self.__config["LatexText"]["append_prefix"]
         self.text_append_suffix = self.__config["LatexText"]["append_suffix"]
         self.comment_prefix = self.__config["LatexComment"]["prefix"]
@@ -77,7 +77,7 @@ et imperdiet magna rhoncus eget. Donec porttitor enim lectus, quis egestas quam 
 odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
 
 \end{document}
-    """, LatexBeautifier)
+    """, LatexBeautifier())
     ld = lp.getResult()
     for l in ld.getLines():
         print l
