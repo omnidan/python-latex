@@ -27,14 +27,24 @@ class LatexBeautifier(LatexDocument):
         """ Returns a string that contains the beautified/pretty printed document """
         document_buffer = ""
         for l in self.getLines():
+            document_buffer += self.__config["LatexLine"]["prefix"]
             if isinstance(l, LatexCommand):
-                document_buffer += self.__config["Indentation"]["LatexCommand"]
+                document_buffer += self.__config["LatexCommand"]["indentation"]
+                document_buffer += l.getString()
             elif isinstance(l, LatexText):
-                document_buffer += self.__config["Indentation"]["LatexText"]
+                document_buffer += self.__config["LatexText"]["indentation"]
+                i = 0
+                for c in l.getString():
+                    if i >= self.__config["LatexText"]["charlimit"]:
+                        document_buffer += "\n"
+                        document_buffer += self.__config["LatexText"]["indentation"]
+                        i = 0
+                    document_buffer += c
+                    i += 1
             elif isinstance(l, LatexComment):
-                document_buffer += self.__config["Indentation"]["LatexComment"]
-            document_buffer += l.getString()
-            document_buffer += "\n\n"
+                document_buffer += self.__config["LatexComment"]["indentation"]
+                document_buffer += l.getString()
+            document_buffer += self.__config["LatexLine"]["suffix"]
         return str(document_buffer)
 
 if __name__ == "__main__":
