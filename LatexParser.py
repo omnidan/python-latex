@@ -59,7 +59,13 @@ class LatexParser:
                 real_cmd = cmd.split("{")
                 cmd = real_cmd[0]
                 opt = "{".join(real_cmd[1:]) + "{" + opt
-            return LatexCommand(cmd, cmd, opt, adopt)
+            cmd = cmd.replace(" ", "")  # remove whitespace from the command
+            if cmd[-1] == "*":
+                cmd = ''.join(cmd[:-1])
+                asterisk = True
+            else:
+                asterisk = False
+            return LatexCommand(cmd, cmd, opt, adopt, asterisk)
 
     def __parse(self, tex):
         parse_buffer = []

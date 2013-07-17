@@ -13,16 +13,30 @@ from LatexLines import LatexCommand, LatexText, LatexComment
 
 
 class LatexRefactor(LatexBeautifier):
-    def getDocument(self):
-        """ Returns a string that contains the refactored document """
-        # do refactoring tasks
+    def __refactorTitle(self, title):
+        """ Changes the title of the latex document """
         i = 0
         for l in self.getLinesContent():
             if isinstance(l, LatexCommand):
                 if l.command_name == "title":
-                    l.command_options = ["Refactored Title"]
+                    l.command_options = [title]
                     self.setContentLine(i, l)
             i += 1
+
+    def __refactorSection2Subsection(self, section_name):
+        """ Refactors a specific section to a subsection """
+        i = 0
+        for l in self.getLinesContent():
+            if isinstance(l, LatexCommand):
+                if l.command_name == "section" and l.command_options == section_name:
+                    l.command_name = "subsection"
+                    self.setContentLine(i, l)
+            i += 1
+
+    def getDocument(self):
+        """ Returns a string that contains the refactored document """
+        # do refactoring tasks
+        self.__refactorTitle("Refactored Title")
         # now pretty print and return the document using the superclass
         return LatexBeautifier.getDocument(self)
 
@@ -53,6 +67,8 @@ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
 pharetra eleifend. Pellentesque eget nisi gravida, faucibus justo ac, volutpat elit. Praesent egestas posuere elit,
 et imperdiet magna rhoncus eget. Donec porttitor enim lectus, quis egestas quam dignissim in. Donec dignissim sapien
 odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
+
+\section*{Displayed Text}
 
 \end{document}
     """, LatexRefactor("pretty2.yml"))

@@ -20,6 +20,8 @@ class LatexCommand(LatexLine):
     def getString(self):
         """ Converts the LatexCommand object into a latex command string and returns it """
         buf = "\\" + self.command_name
+        if self.asterisk:
+            buf += "*"
         if self.additional_options:
             buf += "[" + ",".join(self.additional_options) + "]"
         if self.command_options:
@@ -47,11 +49,12 @@ class LatexCommand(LatexLine):
         else:
             self.additional_options = additional_options.split(",")
 
-    def __init__(self, command_type, command_name, command_options=None, additional_options=None):
+    def __init__(self, command_type, command_name, command_options=None, additional_options=None, asterisk=False):
         self.command_type = command_type
         self.command_name = command_name
         self.command_options = command_options
         self.additional_options = additional_options
+        self.asterisk = asterisk
 
 
 class LatexText(LatexLine):
