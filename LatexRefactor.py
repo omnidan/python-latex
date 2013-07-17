@@ -21,7 +21,6 @@ class LatexRefactor(LatexBeautifier):
             if isinstance(l, LatexCommand):
                 if l.command_name == "title":
                     l.command_options = ["Refactored Title"]
-                    print l
                     self.setContentLine(i, l)
             i += 1
         # now pretty print and return the document using the superclass

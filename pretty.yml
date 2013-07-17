@@ -18,3 +18,4 @@ LatexComment:
     prefix: "% "
     append_prefix: " "
     append_suffix: ""
+    charlimit: 150

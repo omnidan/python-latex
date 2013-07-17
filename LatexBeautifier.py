@@ -44,7 +44,15 @@ class LatexBeautifier(LatexDocument):
                         i = 0
             elif isinstance(l, LatexComment):
                 document_buffer += self.__config["LatexComment"]["indentation"]
-                document_buffer += l.getString()
+                i = 0
+                for c in l.getString():
+                    document_buffer += c
+                    i += 1
+                    # TODO: code a better in-word algorithm than 'if c == " "'
+                    if i >= self.__config["LatexComment"]["charlimit"] and c == " ":
+                        document_buffer += "\n"
+                        document_buffer += self.__config["LatexComment"]["indentation"]
+                        i = 0
             document_buffer += self.__config["LatexLine"]["suffix"]
         return str(document_buffer)
 
