@@ -8,7 +8,7 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from LatexLines import LatexLine
+from lines import LatexLine
 
 
 class LatexDocument:
@@ -79,7 +79,6 @@ class LatexDocument:
         else:
             self.__lines_content[index] = line
             return True
-
 
     def __init__(self):
         self.text_append_prefix = ""

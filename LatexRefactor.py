@@ -8,8 +8,8 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
+from latex import LatexParser, LatexCommand
 from LatexBeautifier import LatexBeautifier
-from LatexLines import LatexCommand, LatexText, LatexComment
 
 
 class LatexRefactor(LatexBeautifier):
@@ -52,7 +52,6 @@ class LatexRefactor(LatexBeautifier):
         return LatexBeautifier.getDocument(self)
 
 if __name__ == "__main__":
-    from LatexParser import LatexParser
     lp = LatexParser("""
 \documentclass[11pt,a4paper,oneside]{report}
 

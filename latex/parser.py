@@ -8,9 +8,9 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
+from document import LatexDocument
+from lines import LatexCommand, LatexText, LatexComment
 import re
-from LatexDocument import LatexDocument
-from LatexLines import LatexCommand, LatexText, LatexComment
 
 
 class LatexParser:
@@ -118,22 +118,3 @@ class LatexParser:
         self.__ld = obj
         self.__ld.setHeader(self.__parse(header))
         self.__ld.setContent(self.__parse(content))
-
-if __name__ == "__main__":
-    lp = LatexParser("""
-\documentclass[11pt,a4paper,oneside]{report}
-
-\usepackage{pslatex,palatino,avant,graphicx,color}
-\usepackage[margin=2cm]{geometry}
-
-\\begin{document}
-\\title{\color{red}Practical Typesetting}
-\\author{\color{blue}Name\\ Work}
-\date{\color{green}December 2005}
-\maketitle
-
-\end{document}
-    """)
-    ld = lp.getResult()
-    print ld.getLines()
-    print ld.getDocument()

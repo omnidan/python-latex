@@ -8,47 +8,46 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from LatexDocument import LatexDocument
-from LatexLines import LatexCommand, LatexText, LatexComment
+from latex import LatexParser, LatexDocument, LatexCommand, LatexText, LatexComment
 import yaml
 
 
 class LatexBeautifier(LatexDocument):
     def __beautifyCommand(self, l):
         """ Returns a string that contains the beautified/pretty printed LatexCommand """
-        buffer = self.__config["LatexCommand"]["indentation"]
-        buffer += l.getString()
-        return buffer
+        document_buffer = self.__config["LatexCommand"]["indentation"]
+        document_buffer += l.getString()
+        return document_buffer
 
     def __limitChars(self, text, charlimit, indentation, newline="\n"):
         """ Returns a string that contains the beautified/pretty text with a char limit per line """
-        buffer = ""
+        document_buffer = ""
         i = 0
         for c in text:
-            buffer += c
+            document_buffer += c
             i += 1
             # TODO: code a better in-word algorithm than 'if c == " "'
             if i >= charlimit and c == " ":
-                buffer += newline
-                buffer += indentation
+                document_buffer += newline
+                document_buffer += indentation
                 i = 0
-        return buffer
+        return document_buffer
 
     def __beautifyText(self, l):
         """ Returns a string that contains the beautified/pretty printed LatexText """
-        buffer = self.__config["LatexText"]["indentation"]
-        buffer += self.__limitChars(l.getString(),
-                                    self.__config["LatexText"]["charlimit"],
-                                    self.__config["LatexText"]["indentation"])
-        return buffer
+        document_buffer = self.__config["LatexText"]["indentation"]
+        document_buffer += self.__limitChars(l.getString(),
+                                             self.__config["LatexText"]["charlimit"],
+                                             self.__config["LatexText"]["indentation"])
+        return document_buffer
 
     def __beautifyComment(self, l):
         """ Returns a string that contains the beautified/pretty printed LatexComment """
-        buffer = self.__config["LatexComment"]["indentation"]
-        buffer += self.__limitChars(l.getString(),
-                                    self.__config["LatexComment"]["charlimit"],
-                                    self.__config["LatexComment"]["indentation"])
-        return buffer
+        document_buffer = self.__config["LatexComment"]["indentation"]
+        document_buffer += self.__limitChars(l.getString(),
+                                             self.__config["LatexComment"]["charlimit"],
+                                             self.__config["LatexComment"]["indentation"])
+        return document_buffer
 
     def __init__(self, config_file="pretty.yml"):
         LatexDocument.__init__(self)
@@ -74,7 +73,6 @@ class LatexBeautifier(LatexDocument):
         return str(document_buffer)
 
 if __name__ == "__main__":
-    from LatexParser import LatexParser
     lp = LatexParser("""
 \documentclass[11pt,a4paper,oneside]{report}
 
