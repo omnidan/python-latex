@@ -14,6 +14,42 @@ import yaml
 
 
 class LatexBeautifier(LatexDocument):
+    def __beautifyCommand(self, l):
+        """ Returns a string that contains the beautified/pretty printed LatexCommand """
+        buffer = self.__config["LatexCommand"]["indentation"]
+        buffer += l.getString()
+        return buffer
+
+    def __limitChars(self, text, charlimit, indentation, newline="\n"):
+        """ Returns a string that contains the beautified/pretty text with a char limit per line """
+        buffer = ""
+        i = 0
+        for c in text:
+            buffer += c
+            i += 1
+            # TODO: code a better in-word algorithm than 'if c == " "'
+            if i >= charlimit and c == " ":
+                buffer += newline
+                buffer += indentation
+                i = 0
+        return buffer
+
+    def __beautifyText(self, l):
+        """ Returns a string that contains the beautified/pretty printed LatexText """
+        buffer = self.__config["LatexText"]["indentation"]
+        buffer += self.__limitChars(l.getString(),
+                                    self.__config["LatexText"]["charlimit"],
+                                    self.__config["LatexText"]["indentation"])
+        return buffer
+
+    def __beautifyComment(self, l):
+        """ Returns a string that contains the beautified/pretty printed LatexComment """
+        buffer = self.__config["LatexComment"]["indentation"]
+        buffer += self.__limitChars(l.getString(),
+                                    self.__config["LatexComment"]["charlimit"],
+                                    self.__config["LatexComment"]["indentation"])
+        return buffer
+
     def __init__(self, config_file="pretty.yml"):
         LatexDocument.__init__(self)
         self.__config = yaml.load(open(config_file, "r").read())
@@ -29,30 +65,11 @@ class LatexBeautifier(LatexDocument):
         for l in self.getLines():
             document_buffer += self.__config["LatexLine"]["prefix"]
             if isinstance(l, LatexCommand):
-                document_buffer += self.__config["LatexCommand"]["indentation"]
-                document_buffer += l.getString()
+                document_buffer += self.__beautifyCommand(l)
             elif isinstance(l, LatexText):
-                document_buffer += self.__config["LatexText"]["indentation"]
-                i = 0
-                for c in l.getString():
-                    document_buffer += c
-                    i += 1
-                    # TODO: code a better in-word algorithm than 'if c == " "'
-                    if i >= self.__config["LatexText"]["charlimit"] and c == " ":
-                        document_buffer += "\n"
-                        document_buffer += self.__config["LatexText"]["indentation"]
-                        i = 0
+                document_buffer += self.__beautifyText(l)
             elif isinstance(l, LatexComment):
-                document_buffer += self.__config["LatexComment"]["indentation"]
-                i = 0
-                for c in l.getString():
-                    document_buffer += c
-                    i += 1
-                    # TODO: code a better in-word algorithm than 'if c == " "'
-                    if i >= self.__config["LatexComment"]["charlimit"] and c == " ":
-                        document_buffer += "\n"
-                        document_buffer += self.__config["LatexComment"]["indentation"]
-                        i = 0
+                document_buffer += self.__beautifyComment(l)
             document_buffer += self.__config["LatexLine"]["suffix"]
         return str(document_buffer)
 
