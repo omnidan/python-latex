@@ -28,8 +28,18 @@ class LatexRefactor(LatexBeautifier):
         i = 0
         for l in self.getLinesContent():
             if isinstance(l, LatexCommand):
-                if l.command_name == "section" and l.command_options == section_name:
+                if l.command_name == "section" and l.command_options == [section_name]:
                     l.command_name = "subsection"
+                    self.setContentLine(i, l)
+            i += 1
+
+    def __refactorSubsection2Section(self, section_name):
+        """ Refactors a specific subsection to a section """
+        i = 0
+        for l in self.getLinesContent():
+            if isinstance(l, LatexCommand):
+                if l.command_name == "subsection" and l.command_options == [section_name]:
+                    l.command_name = "section"
                     self.setContentLine(i, l)
             i += 1
 
@@ -37,6 +47,7 @@ class LatexRefactor(LatexBeautifier):
         """ Returns a string that contains the refactored document """
         # do refactoring tasks
         self.__refactorTitle("Refactored Title")
+        self.__refactorSection2Subsection("Displayed Text")
         # now pretty print and return the document using the superclass
         return LatexBeautifier.getDocument(self)
 
