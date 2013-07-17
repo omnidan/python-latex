@@ -22,7 +22,8 @@ And on Ubuntu:
 Usage
 -----
 
-To use my scripts built with python-latex, you can (after installing python-latex) run any python script in the `scripts/` directory.
+To use my scripts built with python-latex, you can (after installing python-latex) run any python script in the
+`scripts/` directory.
 
 To run LatexBeautifier: `python scripts/LatexBeautifier.py`
 
@@ -34,4 +35,5 @@ Hacking
 
 In your python script, you can now import objects from latex: `from latex import LatexParser`
 
-Most functions are documented using python docstrings.
+Most functions are documented using python docstrings. Look at my python-latex scripts to see an example of
+using of the library.
