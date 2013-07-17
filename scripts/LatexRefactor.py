@@ -1,5 +1,3 @@
-from scripts import LatexBeautifier
-
 __author__ = 'Daniel Bugl'
 __copyright__ = "Copyright 2013, Daniel Bugl"
 __credits__ = ["Daniel Bugl"]
@@ -11,6 +9,7 @@ __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
 from latex import LatexParser, LatexCommand
+from LatexBeautifier import LatexBeautifier
 
 
 class LatexRefactor(LatexBeautifier):
@@ -44,11 +43,30 @@ class LatexRefactor(LatexBeautifier):
                     self.setContentLine(i, l)
             i += 1
 
+    def __refactorExportCode(self, filename, from_line, to_line=None):
+        """ Exports a code block to an external file """
+        if from_line == to_line:
+            to_line = None
+        lines = self.getLinesContent()
+        # TODO: create file too
+        if to_line is None:
+            exported_lines = [lines[from_line]]
+        elif from_line < to_line:
+            exported_lines = lines[from_line:to_line]
+            del lines[from_line+1:to_line]
+        else:
+            print "WARNING: Couldn't export."
+        lines[from_line] = LatexCommand("input", "input", [filename])
+        self.setContent(lines)
+        print exported_lines
+
+
     def getDocument(self):
         """ Returns a string that contains the refactored document """
         # do refactoring tasks
         self.__refactorTitle("Refactored Title")
         self.__refactorSection2Subsection("Displayed Text")
+        self.__refactorExportCode("test.tex", 5)
         # now pretty print and return the document using the superclass
         return LatexBeautifier.getDocument(self)
 
