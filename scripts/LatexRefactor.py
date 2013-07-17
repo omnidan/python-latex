@@ -1,3 +1,5 @@
+from scripts import LatexBeautifier
+
 __author__ = 'Daniel Bugl'
 __copyright__ = "Copyright 2013, Daniel Bugl"
 __credits__ = ["Daniel Bugl"]
@@ -9,7 +11,6 @@ __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
 from latex import LatexParser, LatexCommand
-from LatexBeautifier import LatexBeautifier
 
 
 class LatexRefactor(LatexBeautifier):
