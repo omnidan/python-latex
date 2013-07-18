@@ -73,13 +73,14 @@ class LatexBeautifier(LatexDocument):
         return str(document_buffer)
 
 if __name__ == "__main__":
-    import argparse
+    import argparse, os
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=str,
                         help="the LaTeX input file")
     parser.add_argument("output", type=str,
                         help="the LaTeX output file")
-    parser.add_argument("-c", "--config", action="store", default="pretty.yml",
+    parser.add_argument("-c", "--config", action="store",
+                        default=os.path.dirname(os.path.realpath(__file__))+"pretty.yml",
                         help="set the config file")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
