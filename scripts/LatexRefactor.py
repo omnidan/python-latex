@@ -13,7 +13,7 @@ from LatexBeautifier import LatexBeautifier
 
 
 class LatexRefactor(LatexBeautifier):
-    def __refactorTitle(self, title):
+    def refactorTitle(self, title):
         """ Changes the title of the latex document """
         i = 0
         for l in self.getLinesContent():
@@ -23,7 +23,7 @@ class LatexRefactor(LatexBeautifier):
                     self.setContentLine(i, l)
             i += 1
 
-    def __refactorSection2Subsection(self, section_name):
+    def refactorSection2Subsection(self, section_name):
         """ Refactors a specific section to a subsection """
         i = 0
         for l in self.getLinesContent():
@@ -33,7 +33,7 @@ class LatexRefactor(LatexBeautifier):
                     self.setContentLine(i, l)
             i += 1
 
-    def __refactorSubsection2Section(self, section_name):
+    def refactorSubsection2Section(self, section_name):
         """ Refactors a specific subsection to a section """
         i = 0
         for l in self.getLinesContent():
@@ -43,7 +43,7 @@ class LatexRefactor(LatexBeautifier):
                     self.setContentLine(i, l)
             i += 1
 
-    def __refactorExportCode(self, filename, from_line, to_line=None):
+    def refactorExportCode(self, filename, from_line, to_line=None):
         """ Exports a code block to an external file """
         if from_line == to_line:
             to_line = None
@@ -58,47 +58,44 @@ class LatexRefactor(LatexBeautifier):
             print "WARNING: Couldn't export."
         lines[from_line] = LatexCommand("input", "input", [filename])
         self.setContent(lines)
-        return exported_lines
-
-    def getDocument(self):
-        """ Returns a string that contains the refactored document """
-        # do refactoring tasks
-        self.__refactorTitle("Refactored Title")
-        self.__refactorSection2Subsection("Displayed Text")
-        print self.__refactorExportCode("test.tex", 5)
-        # now pretty print and return the document using the superclass
-        return LatexBeautifier.getDocument(self)
+        ld = LatexBeautifier()
+        ld.setHeader([])
+        ld.setContent(exported_lines)
+        return ld
 
 if __name__ == "__main__":
-    lp = LatexParser("""
-\documentclass[11pt,a4paper,oneside]{report}
-
-\usepackage{pslatex,palatino,avant,graphicx,color}
-\usepackage[margin=2cm]{geometry}
-
-% test
-% test
-% test
-% test
-
-\\begin{document}
-\\title{\color{red}Practical Typesetting}
-\\author{\color{blue}Name\\ Work}
-\date{\color{green}December 2005}
-\maketitle
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dapibus consectetur tellus. Duis vehicula, tortor
-gravida sollicitudin eleifend, erat eros feugiat nisl, eget ultricies risus magna ac leo. Ut est diam, faucibus
-tincidunt ultrices sit amet, congue sed tellus. Donec vel tellus vitae sem mattis congue. Suspendisse faucibus
-semper faucibus. Curabitur congue est arcu, nec sollicitudin odio blandit at. Nullam tempus vulputate aliquam.
-Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis tempus ligula eu nulla
-pharetra eleifend. Pellentesque eget nisi gravida, faucibus justo ac, volutpat elit. Praesent egestas posuere elit,
-et imperdiet magna rhoncus eget. Donec porttitor enim lectus, quis egestas quam dignissim in. Donec dignissim sapien
-odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
-
-\section*{Displayed Text}
-
-\end{document}
-    """, LatexRefactor("pretty2.yml"))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input", type=str,
+                        help="the LaTeX input file")
+    parser.add_argument("output", type=str,
+                        help="the LaTeX output file")
+    parser.add_argument("-c", "--config", action="store", default="pretty.yml",
+                        help="set the config file")
+    parser.add_argument("-d", "--debug", action="store_true",
+                        help="enable debug mode")
+    args = parser.parse_args()
+    lp = LatexParser(open(args.input, "r").read(), LatexRefactor(args.config))
     ld = lp.getResult()
-    print ld.getDocument()
+    ld.refactorTitle("Refactored Title")
+    ld.refactorSection2Subsection("Displayed Text")
+    testtex = ld.refactorExportCode("test.tex", 5)
+    if args.debug:
+        print "DEBUG OUTPUT (" + args.input + "):"
+        for l in ld.getLines():
+            print l, ":", l.getString()
+        print "--"
+        print "OUTPUT (" + args.input + "):"
+        print ld.getDocument()
+        print "--"
+        if args.debug:
+            print "DEBUG OUTPUT (test.tex):"
+            for l in testtex.getLines():
+                print l, ":", l.getString()
+            print "--"
+        print "OUTPUT (test.tex):"
+        print testtex.getDocument()
+        print "--"
+    open(args.output, "w").write(ld.getDocument())
+    open("test.tex", "w").write(testtex.getDocument())
+    print "done."

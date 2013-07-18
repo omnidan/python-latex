@@ -77,8 +77,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=str,
                         help="the LaTeX input file")
+    parser.add_argument("output", type=str,
+                        help="the LaTeX output file")
     parser.add_argument("-c", "--config", action="store", default="pretty.yml",
-                        help="set the path to the config file")
+                        help="set the config file")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
     args = parser.parse_args()
@@ -89,5 +91,8 @@ if __name__ == "__main__":
         for l in ld.getLines():
             print l, ":", l.getString()
         print "--"
-        print "OUTPUT:"
-    print ld.getDocument()
+        print "OUTPUT (" + args.input + "):"
+        print ld.getDocument()
+        print "--"
+    open(args.output, "w").write(ld.getDocument())
+    print "done."

@@ -1,20 +1,19 @@
 LatexLine:
     prefix: ""
-    suffix: "\n\n"
+    suffix: "\n"
     indentation: ""
 
 LatexCommand:
-    indentation: " "
+    indentation: ""
 
 LatexText:
     indentation: "    "
     append_prefix: ""
-#    append_suffix: "\n    "
     append_suffix: ""
     charlimit: 150
 
 LatexComment:
-    indentation: "  "
+    indentation: ""
     prefix: "% "
     append_prefix: " "
     append_suffix: ""
