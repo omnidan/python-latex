@@ -8,4 +8,5 @@ class TestLatexBeautifier:
 
     def __init__(self):
         os.chdir(os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "scripts"))
-        self.result = subprocess.check_output(["python", "LatexBeautifier.py", "example.tex", "output.tex"])
+        self.result = str(subprocess.check_output(["python", "LatexBeautifier.py", "example.tex", "output.tex"],
+                                                  universal_newlines=True))
