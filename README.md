@@ -9,6 +9,8 @@ parsing and modifying LaTeX documents with python
 Installation
 ------------
 
+First of all, you need python 2.7 or higher installed.
+
 To install python-latex, simply run (as root):
 `python setup.py install`
 

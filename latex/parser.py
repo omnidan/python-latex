@@ -8,8 +8,8 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from document import LatexDocument
-from lines import LatexCommand, LatexText, LatexComment
+from .document import LatexDocument
+from .lines import LatexCommand, LatexText, LatexComment
 import re
 
 
@@ -77,7 +77,7 @@ class LatexParser:
                 # this is a latex command, parse it as such
                 latex_command = self.__matchTeX(line)
                 if latex_command is False:
-                    print "WARNING: Couldn't parse LaTeX command: " + line
+                    print("WARNING: Couldn't parse LaTeX command: " + line)
                 else:
                     latex_command.parseOptions()
                     parse_buffer.append(latex_command)

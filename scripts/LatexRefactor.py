@@ -55,7 +55,7 @@ class LatexRefactor(LatexBeautifier):
             exported_lines = lines[from_line:to_line]
             del lines[from_line+1:to_line]
         else:
-            print "WARNING: Couldn't export."
+            print("WARNING: Couldn't export.")
         lines[from_line] = LatexCommand("input", "input", [filename])
         self.setContent(lines)
         ld = LatexBeautifier()
@@ -65,13 +65,14 @@ class LatexRefactor(LatexBeautifier):
 
 if __name__ == "__main__":
     import argparse
+    import os
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=str,
                         help="the LaTeX input file")
     parser.add_argument("output", type=str,
                         help="the LaTeX output file")
     parser.add_argument("-c", "--config", action="store",
-                        default=os.path.dirname(os.path.realpath(__file__))+"pretty.yml",
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)), "pretty.yml"),
                         help="set the config file")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
@@ -82,21 +83,21 @@ if __name__ == "__main__":
     ld.refactorSection2Subsection("Displayed Text")
     testtex = ld.refactorExportCode("test.tex", 5)
     if args.debug:
-        print "DEBUG OUTPUT (" + args.input + "):"
+        print("DEBUG OUTPUT (" + args.input + "):")
         for l in ld.getLines():
-            print l, ":", l.getString()
-        print "--"
-        print "OUTPUT (" + args.input + "):"
-        print ld.getDocument()
-        print "--"
+            print(str(l) + ": " + l.getString())
+        print("--")
+        print("OUTPUT (" + args.input + "):")
+        print(ld.getDocument())
+        print("--")
         if args.debug:
-            print "DEBUG OUTPUT (test.tex):"
+            print("DEBUG OUTPUT (test.tex):")
             for l in testtex.getLines():
-                print l, ":", l.getString()
-            print "--"
-        print "OUTPUT (test.tex):"
-        print testtex.getDocument()
-        print "--"
+                print(str(l) + ": " + l.getString())
+            print("--")
+        print("OUTPUT (test.tex):")
+        print(testtex.getDocument())
+        print("--")
     open(args.output, "w").write(ld.getDocument())
     open("test.tex", "w").write(testtex.getDocument())
-    print "done."
+    print("done.")

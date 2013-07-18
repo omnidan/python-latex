@@ -89,12 +89,12 @@ if __name__ == "__main__":
     lp = LatexParser(open(args.input, "r").read(), LatexBeautifier(args.config))
     ld = lp.getResult()
     if args.debug:
-        print "DEBUG OUTPUT:"
+        print("DEBUG OUTPUT:")
         for l in ld.getLines():
-            print l, ":", l.getString()
-        print "--"
-        print "OUTPUT (" + args.input + "):"
-        print ld.getDocument()
-        print "--"
+            print(str(l) + ": " + l.getString())
+        print("--")
+        print("OUTPUT (" + args.input + "):")
+        print(ld.getDocument())
+        print("--")
     open(args.output, "w").write(ld.getDocument())
-    print "done."
+    print("done.")

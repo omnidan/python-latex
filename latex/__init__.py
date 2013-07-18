@@ -8,6 +8,6 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from lines import *
-from document import *
-from parser import *
+from .lines import *
+from .document import *
+from .parser import *

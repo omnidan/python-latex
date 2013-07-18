@@ -8,7 +8,7 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from lines import LatexLine
+from .lines import LatexLine
 
 
 class LatexDocument:
