@@ -25,9 +25,9 @@ Usage
 To use my scripts built with python-latex, you can (after installing python-latex) run any python script in the
 `scripts/` directory.
 
-To run LatexBeautifier: `python scripts/LatexBeautifier.py`
+To run LatexBeautifier: `python scripts/LatexBeautifier.py scripts/example.tex scripts/output.tex`
 
-To run LatexRefactor: `python scripts/LatexRefactor.py`
+To run LatexRefactor: `python scripts/LatexRefactor.py scripts/example.tex scripts/output.tex`
 
 
 Hacking
