@@ -58,15 +58,14 @@ class LatexRefactor(LatexBeautifier):
             print "WARNING: Couldn't export."
         lines[from_line] = LatexCommand("input", "input", [filename])
         self.setContent(lines)
-        print exported_lines
-
+        return exported_lines
 
     def getDocument(self):
         """ Returns a string that contains the refactored document """
         # do refactoring tasks
         self.__refactorTitle("Refactored Title")
         self.__refactorSection2Subsection("Displayed Text")
-        self.__refactorExportCode("test.tex", 5)
+        print self.__refactorExportCode("test.tex", 5)
         # now pretty print and return the document using the superclass
         return LatexBeautifier.getDocument(self)
 

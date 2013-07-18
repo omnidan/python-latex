@@ -73,35 +73,21 @@ class LatexBeautifier(LatexDocument):
         return str(document_buffer)
 
 if __name__ == "__main__":
-    lp = LatexParser("""
-\documentclass[11pt,a4paper,oneside]{report}
-
-\usepackage{pslatex,palatino,avant,graphicx,color}
-\usepackage[margin=2cm]{geometry}
-
-% test
-% test
-% test
-% test
-
-\\begin{document}
-\\title{\color{red}Practical Typesetting}
-\\author{\color{blue}Name\\ Work}
-\date{\color{green}December 2005}
-\maketitle
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dapibus consectetur tellus. Duis vehicula, tortor
-gravida sollicitudin eleifend, erat eros feugiat nisl, eget ultricies risus magna ac leo. Ut est diam, faucibus
-tincidunt ultrices sit amet, congue sed tellus. Donec vel tellus vitae sem mattis congue. Suspendisse faucibus
-semper faucibus. Curabitur congue est arcu, nec sollicitudin odio blandit at. Nullam tempus vulputate aliquam.
-Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis tempus ligula eu nulla
-pharetra eleifend. Pellentesque eget nisi gravida, faucibus justo ac, volutpat elit. Praesent egestas posuere elit,
-et imperdiet magna rhoncus eget. Donec porttitor enim lectus, quis egestas quam dignissim in. Donec dignissim sapien
-odio, nec molestie enim imperdiet ac. Praesent venenatis quis mi nec pretium.
-
-\end{document}
-    """, LatexBeautifier())
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input", type=str,
+                        help="the LaTeX input file")
+    parser.add_argument("-c", "--config", action="store", default="pretty.yml",
+                        help="set the path to the config file")
+    parser.add_argument("-d", "--debug", action="store_true",
+                        help="enable debug mode")
+    args = parser.parse_args()
+    lp = LatexParser(open(args.input, "r").read(), LatexBeautifier(args.config))
     ld = lp.getResult()
-    for l in ld.getLines():
-        print l
+    if args.debug:
+        print "DEBUG OUTPUT:"
+        for l in ld.getLines():
+            print l, ":", l.getString()
+        print "--"
+        print "OUTPUT:"
     print ld.getDocument()
