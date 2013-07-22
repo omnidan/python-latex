@@ -49,6 +49,7 @@ class LatexRefactor(LatexBeautifier):
             to_line = None
         lines = self.getLinesContent()
         # TODO: create file too
+        exported_lines = []
         if to_line is None:
             exported_lines = [lines[from_line]]
         elif from_line < to_line:

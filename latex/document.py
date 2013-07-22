@@ -8,7 +8,7 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from .lines import LatexLine
+from . import lines
 
 
 class LatexDocument:
@@ -34,7 +34,7 @@ class LatexDocument:
 
     def addHeaderLine(self, line):
         """ Adds a LatexLine to the LatexDocument object header """
-        if not isinstance(line, LatexLine):
+        if not isinstance(line, lines.LatexLine):
             return False
         else:
             self.__lines_header.append(line)
@@ -42,7 +42,7 @@ class LatexDocument:
 
     def addContentLine(self, line):
         """ Adds a LatexLine to the LatexDocument object content """
-        if not isinstance(line, LatexLine):
+        if not isinstance(line, lines.LatexLine):
             return False
         else:
             self.__lines_content.append(line)
@@ -66,7 +66,7 @@ class LatexDocument:
 
     def setHeaderLine(self, index, line):
         """ Set a line with a specific index in the LatexDocument header list """
-        if not isinstance(line, LatexLine):
+        if not isinstance(line, lines.LatexLine):
             return False
         else:
             self.__lines_header[index] = line
@@ -74,7 +74,7 @@ class LatexDocument:
 
     def setContentLine(self, index, line):
         """ Set a line with a specific index in the LatexDocument content list """
-        if not isinstance(line, LatexLine):
+        if not isinstance(line, lines.LatexLine):
             return False
         else:
             self.__lines_content[index] = line

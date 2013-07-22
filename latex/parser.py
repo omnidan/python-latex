@@ -30,6 +30,7 @@ class LatexParser:
                 content_buffer.append(line)
         return header_buffer, content_buffer
 
+    # noinspection PyUnusedLocal
     def __matchTeX(self, line):
         """ Some regex magic to parse TeX commands """
         cmd = None
@@ -54,7 +55,7 @@ class LatexParser:
             # couldn't parse, invalid latex command
             return False
         else:
-            # TODO: maybe fix the regex instead of using this hack
+            # TODO: maybe fix the regex instead of using this workaround
             if "{" in cmd:
                 real_cmd = cmd.split("{")
                 cmd = real_cmd[0]
