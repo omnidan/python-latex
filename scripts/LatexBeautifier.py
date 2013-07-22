@@ -70,6 +70,8 @@ class LatexBeautifier(LatexDocument):
             elif isinstance(l, LatexComment):
                 document_buffer += self.__beautifyComment(l)
             document_buffer += self.__config["LatexLine"]["suffix"]
+        suffix_chars = len(self.__config["LatexLine"]["suffix"])
+        document_buffer = document_buffer[:-suffix_chars]
         return str(document_buffer)
 
 if __name__ == "__main__":
@@ -85,6 +87,8 @@ if __name__ == "__main__":
                         help="set the config file")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
+    parser.add_argument("-p", "--stdout", action="store_true",
+                        help="print result to stdout (suppresses 'done.' message, overrides output argument)")
     args = parser.parse_args()
     lp = LatexParser(open(args.input, "r").read(), LatexBeautifier(args.config))
     ld = lp.getResult()
@@ -96,5 +100,9 @@ if __name__ == "__main__":
         print("OUTPUT (" + args.input + "):")
         print(ld.getDocument())
         print("--")
-    open(args.output, "w").write(ld.getDocument())
-    print("done.")
+    if args.stdout:
+        print(ld.getDocument())
+    else:
+        open(args.output, "w").write(ld.getDocument())
+    if not args.stdout:
+        print("done.")
