@@ -1,3 +1,4 @@
+from __future__ import print_function
 __author__ = 'Daniel Bugl'
 __copyright__ = "Copyright 2013, Daniel Bugl"
 __credits__ = ["Daniel Bugl"]
@@ -56,7 +57,8 @@ class LatexRefactor(LatexBeautifier):
             exported_lines = lines[from_line:to_line]
             del lines[from_line+1:to_line]
         else:
-            print("WARNING: Couldn't export.")
+            import sys
+            print("WARNING: Couldn't export.", file=sys.stderr)
         lines[from_line] = LatexCommand("input", "input", [filename])
         self.setContent(lines)
         ld = LatexBeautifier()
