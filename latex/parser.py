@@ -1,3 +1,4 @@
+from __future__ import print_function
 __author__ = 'Daniel Bugl'
 __copyright__ = "Copyright 2013, Daniel Bugl"
 __credits__ = ["Daniel Bugl"]
@@ -90,7 +91,8 @@ class LatexParser:
                     # this is a latex command, parse it as such
                     latex_command = self.__matchTeX(line, prefix, suffix)
                     if latex_command is False:
-                        print("WARNING: Couldn't parse LaTeX command: " + line)
+                        import sys
+                        print("WARNING: Couldn't parse LaTeX command: " + line, file=sys.stderr)
                     else:
                         latex_command.parseOptions()
                         parse_buffer.append(latex_command)
@@ -102,8 +104,10 @@ class LatexParser:
                         self.__last_line.append(comment)
                     else:
                         # create new LatexComment object
-                        parse_buffer.append(LatexComment(comment, self.__ld.comment_prefix, self.__ld.comment_append_prefix,
-                                                         self.__ld.comment_append_suffix, prefix=prefix, suffix=suffix))
+                        parse_buffer.append(LatexComment(comment, self.__ld.comment_prefix,
+                                                         self.__ld.comment_append_prefix,
+                                                         self.__ld.comment_append_suffix,
+                                                         prefix=prefix, suffix=suffix))
                 else:
                     # this is a normal text line
                     if not do_not_concat_text and isinstance(self.__last_line, LatexText):
