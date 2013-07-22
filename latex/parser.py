@@ -119,7 +119,6 @@ class LatexParser:
     def getResult(self):
         return self.__ld
 
-    # TODO: Fix do_not_concat_text, it's very buggy
     def __init__(self, tex, obj=None, keep_empty_lines=False, do_not_concat_text=False):
         # init last_line variable
         self.__last_line = None

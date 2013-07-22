@@ -18,6 +18,8 @@ class LatexDocument:
         for l in self.getLines():
             document_buffer += l.getString(no_prefix)
             document_buffer += "\n"
+        # remove the last newline
+        document_buffer = document_buffer[:-1]
         return str(document_buffer)
 
     def getLines(self):
