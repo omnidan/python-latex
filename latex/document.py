@@ -12,11 +12,11 @@ from . import lines
 
 
 class LatexDocument:
-    def getDocument(self):
+    def getDocument(self, no_prefix=True):
         """ Returns a string that contains the whole document """
         document_buffer = ""
         for l in self.getLines():
-            document_buffer += l.getString()
+            document_buffer += l.getString(no_prefix)
             document_buffer += "\n"
         return str(document_buffer)
 
