@@ -79,6 +79,7 @@ if __name__ == "__main__":
                         help="enable debug mode")
     args = parser.parse_args()
     lp = LatexParser(open(args.input, "r").read(), LatexRefactor(args.config))
+    # Try me: , keep_empty_lines=True, do_not_concat_text=False)
     ld = lp.getResult()
     ld.refactorTitle("Refactored Title")
     ld.refactorSection2Subsection("Displayed Text")
