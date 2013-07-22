@@ -17,7 +17,7 @@ class LatexLine:
 
 
 class LatexCommand(LatexLine):
-    def getString(self):
+    def getString(self, no_prefix=True):
         """ Converts the LatexCommand object into a latex command string and returns it """
         buf = "\\" + self.command_name
         if self.asterisk:
@@ -26,7 +26,10 @@ class LatexCommand(LatexLine):
             buf += "[" + ",".join(self.additional_options) + "]"
         if self.command_options:
             buf += "{" + ",".join(self.command_options) + "}"
-        return self.prefix + str(buf) + self.suffix
+        if no_prefix:
+            return str(buf)
+        else:
+            return self.prefix + str(buf) + self.suffix
 
     def parseOptions(self, options=None, additional_options=None):
         """ Parse the command_options and additional_options strings into a list and set the values in the object"""
@@ -62,9 +65,12 @@ class LatexCommand(LatexLine):
 
 
 class LatexText(LatexLine):
-    def getString(self):
+    def getString(self, no_prefix=True):
         """ Converts the LatexText object into a string and returns it """
-        return self.prefix + str(self.text) + self.suffix
+        if no_prefix:
+            return str(self.text)
+        else:
+            return self.prefix + str(self.text) + self.suffix
 
     def append(self, text):
         """ Appends string to LatexText object """
@@ -80,9 +86,12 @@ class LatexText(LatexLine):
 
 
 class LatexComment(LatexLine):
-    def getString(self):
+    def getString(self, no_prefix=True):
         """ Converts the LatexComment object into a latex comment string and returns it """
-        return self.prefix + str(self.__comment_prefix + self.text) + self.suffix
+        if no_prefix:
+            return str(self.__comment_prefix + self.text)
+        else:
+            return self.prefix + str(self.__comment_prefix + self.text) + self.suffix
 
     def append(self, comment):
         """ Appends string to LatexComment object """

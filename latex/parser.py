@@ -74,7 +74,7 @@ class LatexParser:
             # firstly, strip the line to remove whitespace
             nonstripped = line
             line = line.strip()
-            if nonstripped == line:
+            if nonstripped == line or line == "":
                 prefix = ""
                 suffix = ""
             else:
@@ -83,6 +83,7 @@ class LatexParser:
             if line == "":
                 if keep_empty_lines:
                     parse_buffer.append(LatexText(nonstripped))
+                    self.__last_line = parse_buffer[-1]
             else:
                 # now check if command, comment or text
                 if line[0] == '\\':
@@ -112,7 +113,7 @@ class LatexParser:
                         # create new LatexText object
                         parse_buffer.append(LatexText(line, self.__ld.text_append_prefix, self.__ld.text_append_suffix,
                                                       prefix=prefix, suffix=suffix))
-            self.__last_line = parse_buffer[-1]
+                self.__last_line = parse_buffer[-1]
         return parse_buffer
 
     def getResult(self):
