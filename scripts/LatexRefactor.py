@@ -70,7 +70,7 @@ if __name__ == "__main__":
     import argparse
     import os
     parser = argparse.ArgumentParser()
-    
+
     # basic arguments
     parser.add_argument("input", type=str,
                         help="the LaTeX input file")
@@ -81,6 +81,9 @@ if __name__ == "__main__":
                         help="set the config file")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
+    parser.add_argument("-b", "--beautify", action="store_true",
+                        help="beautify code too")
+
     # refactoring tasks
     parser.add_argument("--refactor-title", "--refactor-title", action="store")
     parser.add_argument("--refactor-section2subsection", "--refactor-section2subsection", action="store")
@@ -88,7 +91,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    lp = LatexParser(open(args.input, "r").read(), LatexRefactor(args.config))
+    if args.beautify:
+        lp = LatexParser(open(args.input, "r").read(), LatexRefactor(args.config))
+    else:
+        lp = LatexParser(open(args.input, "r").read(), LatexRefactor(args.config),
+                         keep_empty_lines=True, do_not_concat_text=True)
     ld = lp.getResult()
 
     # execute refactoring tasks
@@ -100,6 +107,10 @@ if __name__ == "__main__":
         ld.refactorSubsection2Section(args.refactor_subsection2section)
 
     # output and save
+    if args.beautify:
+        document = ld.getDocument()
+    else:
+        document = ld.getDocument(no_prefix=False)
     # TODO: Implement
     # testtex = ld.refactorExportCode("test.tex", 5)
     if args.debug:
@@ -108,7 +119,7 @@ if __name__ == "__main__":
             print(str(l) + ": " + l.getString())
         print("--")
         print("OUTPUT (" + args.input + "):")
-        print(ld.getDocument())
+        print(document)
         print("--")
         #if args.debug:
         #    print("DEBUG OUTPUT (test.tex):")
@@ -118,6 +129,6 @@ if __name__ == "__main__":
         #print("OUTPUT (test.tex):")
         #print(testtex.getDocument())
         #print("--")
-    open(args.output, "w").write(ld.getDocument())
+    open(args.output, "w").write(document)
     #open("test.tex", "w").write(testtex.getDocument())
     print("done.")

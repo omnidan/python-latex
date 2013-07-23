@@ -13,10 +13,10 @@ import yaml
 
 
 class LatexBeautifier(LatexDocument):
-    def __beautifyCommand(self, l):
+    def __beautifyCommand(self, l, no_prefix=True):
         """ Returns a string that contains the beautified/pretty printed LatexCommand """
         document_buffer = self.__config["LatexCommand"]["indentation"]
-        document_buffer += l.getString()
+        document_buffer += l.getString(no_prefix)
         return document_buffer
 
     def __limitChars(self, text, charlimit, indentation, newline="\n"):
@@ -33,18 +33,18 @@ class LatexBeautifier(LatexDocument):
                 i = 0
         return document_buffer
 
-    def __beautifyText(self, l):
+    def __beautifyText(self, l, no_prefix=True):
         """ Returns a string that contains the beautified/pretty printed LatexText """
         document_buffer = self.__config["LatexText"]["indentation"]
-        document_buffer += self.__limitChars(l.getString(),
+        document_buffer += self.__limitChars(l.getString(no_prefix),
                                              self.__config["LatexText"]["charlimit"],
                                              self.__config["LatexText"]["indentation"])
         return document_buffer
 
-    def __beautifyComment(self, l):
+    def __beautifyComment(self, l, no_prefix=True):
         """ Returns a string that contains the beautified/pretty printed LatexComment """
         document_buffer = self.__config["LatexComment"]["indentation"]
-        document_buffer += self.__limitChars(l.getString(),
+        document_buffer += self.__limitChars(l.getString(no_prefix),
                                              self.__config["LatexComment"]["charlimit"],
                                              self.__config["LatexComment"]["indentation"])
         return document_buffer
@@ -58,17 +58,17 @@ class LatexBeautifier(LatexDocument):
         self.comment_append_prefix = self.__config["LatexComment"]["append_prefix"]
         self.comment_append_suffix = self.__config["LatexComment"]["append_suffix"]
 
-    def getDocument(self):
+    def getDocument(self, no_prefix=True):
         """ Returns a string that contains the beautified/pretty printed document """
         document_buffer = ""
         for l in self.getLines():
             document_buffer += self.__config["LatexLine"]["prefix"]
             if isinstance(l, LatexCommand):
-                document_buffer += self.__beautifyCommand(l)
+                document_buffer += self.__beautifyCommand(l, no_prefix=no_prefix)
             elif isinstance(l, LatexText):
-                document_buffer += self.__beautifyText(l)
+                document_buffer += self.__beautifyText(l, no_prefix=no_prefix)
             elif isinstance(l, LatexComment):
-                document_buffer += self.__beautifyComment(l)
+                document_buffer += self.__beautifyComment(l, no_prefix=no_prefix)
             document_buffer += self.__config["LatexLine"]["suffix"]
         suffix_chars = len(self.__config["LatexLine"]["suffix"])
         document_buffer = document_buffer[:-suffix_chars]
