@@ -9,11 +9,24 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from latex import LatexParser, LatexCommand
+from latex import LatexParser, LatexCommand, LatexComment
 from LatexBeautifier import LatexBeautifier
 
 
 class LatexRefactor(LatexBeautifier):
+    def removeComments(self):
+        """ Removes all comments from the latex document """
+        buf = []
+        for l in self.getLinesContent():
+            if not isinstance(l, LatexComment):
+                buf.append(l)
+        self.setContent(buf)
+        buf = []
+        for l in self.getLinesHeader():
+            if not isinstance(l, LatexComment):
+                buf.append(l)
+        self.setHeader(buf)
+
     def refactorTitle(self, title):
         """ Changes the title of the latex document """
         i = 0
@@ -82,9 +95,10 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
     parser.add_argument("-b", "--beautify", action="store_true",
-                        help="beautify code too")
+                        help="beautify code after refactoring")
 
     # refactoring tasks
+    parser.add_argument("--remove-comments", "--remove-comments", action="store_true")
     parser.add_argument("--refactor-title", "--refactor-title", action="store")
     parser.add_argument("--refactor-section2subsection", "--refactor-section2subsection", action="store")
     parser.add_argument("--refactor-subsection2section", "--refactor-subsection2section", action="store")
@@ -99,6 +113,8 @@ if __name__ == "__main__":
     ld = lp.getResult()
 
     # execute refactoring tasks
+    if args.remove_comments:
+        ld.removeComments()
     if args.refactor_title:
         ld.refactorTitle(args.refactor_title)
     if args.refactor_section2subsection:
