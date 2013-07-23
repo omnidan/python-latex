@@ -70,6 +70,8 @@ if __name__ == "__main__":
     import argparse
     import os
     parser = argparse.ArgumentParser()
+    
+    # basic arguments
     parser.add_argument("input", type=str,
                         help="the LaTeX input file")
     parser.add_argument("output", type=str,
@@ -79,12 +81,27 @@ if __name__ == "__main__":
                         help="set the config file")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="enable debug mode")
+    # refactoring tasks
+    parser.add_argument("--refactor-title", "--refactor-title", action="store")
+    parser.add_argument("--refactor-section2subsection", "--refactor-section2subsection", action="store")
+    parser.add_argument("--refactor-subsection2section", "--refactor-subsection2section", action="store")
+
     args = parser.parse_args()
+
     lp = LatexParser(open(args.input, "r").read(), LatexRefactor(args.config))
     ld = lp.getResult()
-    ld.refactorTitle("Refactored Title")
-    ld.refactorSection2Subsection("Displayed Text")
-    testtex = ld.refactorExportCode("test.tex", 5)
+
+    # execute refactoring tasks
+    if args.refactor_title:
+        ld.refactorTitle(args.refactor_title)
+    if args.refactor_section2subsection:
+        ld.refactorSection2Subsection(args.refactor_section2subsection)
+    if args.refactor_subsection2section:
+        ld.refactorSubsection2Section(args.refactor_subsection2section)
+
+    # output and save
+    # TODO: Implement
+    # testtex = ld.refactorExportCode("test.tex", 5)
     if args.debug:
         print("DEBUG OUTPUT (" + args.input + "):")
         for l in ld.getLines():
@@ -93,14 +110,14 @@ if __name__ == "__main__":
         print("OUTPUT (" + args.input + "):")
         print(ld.getDocument())
         print("--")
-        if args.debug:
-            print("DEBUG OUTPUT (test.tex):")
-            for l in testtex.getLines():
-                print(str(l) + ": " + l.getString())
-            print("--")
-        print("OUTPUT (test.tex):")
-        print(testtex.getDocument())
-        print("--")
+        #if args.debug:
+        #    print("DEBUG OUTPUT (test.tex):")
+        #    for l in testtex.getLines():
+        #        print(str(l) + ": " + l.getString())
+        #    print("--")
+        #print("OUTPUT (test.tex):")
+        #print(testtex.getDocument())
+        #print("--")
     open(args.output, "w").write(ld.getDocument())
-    open("test.tex", "w").write(testtex.getDocument())
+    #open("test.tex", "w").write(testtex.getDocument())
     print("done.")
