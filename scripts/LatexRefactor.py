@@ -72,7 +72,7 @@ class LatexRefactor(LatexBeautifier):
         else:
             import sys
             print("WARNING: Couldn't export.", file=sys.stderr)
-        lines[from_line] = LatexCommand("input", "input", [filename])
+        lines[from_line] = LatexCommand("input", [filename])
         self.setContent(lines)
         ld = LatexBeautifier()
         ld.setHeader([])

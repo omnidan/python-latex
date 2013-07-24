@@ -52,9 +52,8 @@ class LatexCommand(LatexLine):
         else:
             self.additional_options = additional_options.split(",")
 
-    def __init__(self, command_type, command_name, command_options=None, additional_options=None, asterisk=False,
+    def __init__(self, command_name, command_options=None, additional_options=None, asterisk=False,
                  prefix="", suffix=""):
-        self.command_type = command_type
         self.command_name = command_name
         self.command_options = command_options
         self.additional_options = additional_options

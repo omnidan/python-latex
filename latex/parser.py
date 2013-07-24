@@ -115,7 +115,7 @@ class LatexParser:
                 asterisk = True
             else:
                 asterisk = False
-            return LatexCommand(cmd, cmd, opt, adopt, asterisk, prefix, suffix)
+            return LatexCommand(cmd, opt, adopt, asterisk, prefix, suffix)
 
     def __parse(self, tex, keep_empty_lines=False, do_not_concat_text=False):
         parse_buffer = []

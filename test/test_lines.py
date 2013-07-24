@@ -20,7 +20,7 @@ class TestLatexCommand:
         assert self.obj.additional_options == ["test1", "test2", "option3"]
 
     def __init__(self):
-        self.obj = LatexCommand("test", "test", ["option"], ["additional_option"], True)
+        self.obj = LatexCommand("test", ["option"], ["additional_option"], True)
         self.obj.parseOptions("option1,option2", "test1,test2,option3")
         # the command_options and additional_options lists should have changed now
 
