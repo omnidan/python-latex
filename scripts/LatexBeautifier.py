@@ -8,7 +8,7 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from latex import LatexParser, LatexDocument, LatexCommand, LatexText, LatexComment
+from latex import LatexParser, LatexDocument, LatexCommand, LatexText, LatexComment, LatexMacro
 import yaml
 
 
@@ -16,6 +16,12 @@ class LatexBeautifier(LatexDocument):
     def __beautifyCommand(self, l, no_prefix=True):
         """ Returns a string that contains the beautified/pretty printed LatexCommand """
         document_buffer = self.__config["LatexCommand"]["indentation"]
+        document_buffer += l.getString(no_prefix)
+        return document_buffer
+
+    def __beautifyMacro(self, l, no_prefix=True):
+        """ Returns a string that contains the beautified/pretty printed LatexMacro """
+        document_buffer = self.__config["LatexMacro"]["indentation"]
         document_buffer += l.getString(no_prefix)
         return document_buffer
 
@@ -69,6 +75,8 @@ class LatexBeautifier(LatexDocument):
                 document_buffer += self.__beautifyText(l, no_prefix=no_prefix)
             elif isinstance(l, LatexComment):
                 document_buffer += self.__beautifyComment(l, no_prefix=no_prefix)
+            elif isinstance(l, LatexMacro):
+                document_buffer += self.__beautifyMacro(l, no_prefix=no_prefix)
             document_buffer += self.__config["LatexLine"]["suffix"]
         suffix_chars = len(self.__config["LatexLine"]["suffix"])
         document_buffer = document_buffer[:-suffix_chars]

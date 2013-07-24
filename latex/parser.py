@@ -10,7 +10,7 @@ __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
 from .document import LatexDocument
-from .lines import LatexCommand, LatexText, LatexComment
+from .lines import LatexCommand, LatexText, LatexComment, LatexMacro
 import re
 
 
@@ -32,11 +32,59 @@ class LatexParser:
         return header_buffer, content_buffer
 
     # noinspection PyUnusedLocal
+    def __matchTeXMacro(self, line, prefix="", suffix=""):
+        """ Some regex magic to parse TeX macros """
+        # TODO: macros can occupy multiple lines, add support for this
+        cmd = None
+        opt = None
+        argc = None
+        p = re.match(r'\\newcommand\{(.*)}\[(.*)]\{(.*)}', line, re.M | re.I)
+        if p is None:
+            # match without additional [] arguments
+            p = re.match(r'\\newcommand\{(.*)}\{(.*)}', line, re.M | re.I)
+            if p is None:
+                # invalid macro
+                return False
+            else:
+                cmd = p.group(1)
+                opt = p.group(2)
+        else:
+            cmd = p.group(1)
+            try:
+                argc = int(p.group(2))
+            except ValueError:
+                return False
+            opt = p.group(3)
+        if cmd is None:
+            # couldn't parse, invalid latex macro
+            return False
+        elif opt is None:
+            # couldn't parse, invalid latex macro
+            return False
+        else:
+            # regex is a finite state machine, it can't match nested commands
+            # TODO: rewrite this to work for macros
+            if "{" in cmd:
+                real_cmd = cmd.split("{")
+                cmd = real_cmd[0]
+                opt = "{".join(real_cmd[1:]) + "{" + opt
+            cmd = cmd.replace(" ", "")  # remove whitespace from the command
+            if cmd[-1] == "*":
+                cmd = ''.join(cmd[:-1])
+                asterisk = True
+            else:
+                asterisk = False
+            if not argc:
+                argc = 0
+            return LatexMacro(cmd, opt, argc, prefix, suffix)
+
+    # noinspection PyUnusedLocal
     def __matchTeX(self, line, prefix="", suffix=""):
         """ Some regex magic to parse TeX commands """
         cmd = None
         opt = None
         adopt = None
+        # TODO: add support for multiple arguments
         p = re.match(r'\\(.*)\[(.*)\]\{(.*)}', line, re.M | re.I)
         if p is None:
             # match without additional [] arguments
@@ -56,7 +104,7 @@ class LatexParser:
             # couldn't parse, invalid latex command
             return False
         else:
-            # TODO: maybe fix the regex instead of using this workaround
+            # regex is a finite state machine, it can't match nested commands
             if "{" in cmd:
                 real_cmd = cmd.split("{")
                 cmd = real_cmd[0]
@@ -94,8 +142,13 @@ class LatexParser:
                         import sys
                         print("WARNING: Couldn't parse LaTeX command: " + line, file=sys.stderr)
                     else:
-                        latex_command.parseOptions()
-                        parse_buffer.append(latex_command)
+                        if latex_command.command_name == "newcommand":
+                            # this is a LatexMacro, not a LatexCommand
+                            latex_macro = self.__matchTeXMacro(line, prefix, suffix)
+                            parse_buffer.append(latex_macro)
+                        else:
+                            latex_command.parseOptions()
+                            parse_buffer.append(latex_command)
                 elif line[0] == "%":
                     # remove first character from line and create the LatexComment object
                     comment = "".join(line[1:]).strip()

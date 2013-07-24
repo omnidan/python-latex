@@ -6,6 +6,9 @@ LatexLine:
 LatexCommand:
     indentation: ""
 
+LatexMacro:
+    indentation: ""
+
 LatexText:
     indentation: "    "
     append_prefix: ""

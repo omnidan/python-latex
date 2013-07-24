@@ -65,6 +65,7 @@ class LatexCommand(LatexLine):
 
 
 class LatexMacro(LatexLine):
+    # TODO: add environment macros
     def getString(self, no_prefix=True):
         """ Converts the LatexMacro object into a latex macro string (newcommand command) and returns it """
         buf = "\\newcommand{\\" + self.macro_name + "}"
@@ -83,6 +84,12 @@ class LatexMacro(LatexLine):
         # these are needed when not pretty printing
         self.prefix = str(prefix)
         self.suffix = str(suffix)
+
+
+class LatexEnvironment(LatexLine):
+    pass
+    # TODO: Implement this, this is actually not a single line but a collection of lines,
+    # TODO: Replace the header and content definitions in LatexDocument with environments.
 
 
 class LatexText(LatexLine):
