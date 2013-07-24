@@ -1,4 +1,4 @@
-from latex import LatexLine, LatexCommand, LatexText, LatexComment
+from latex import LatexLine, LatexCommand, LatexText, LatexComment, LatexMacro
 
 
 class TestLatexLine:
@@ -23,6 +23,21 @@ class TestLatexCommand:
         self.obj = LatexCommand("test", "test", ["option"], ["additional_option"], True)
         self.obj.parseOptions("option1,option2", "test1,test2,option3")
         # the command_options and additional_options lists should have changed now
+
+
+class TestLatexMacro:
+    def test_name(self):
+        assert self.obj.macro_name == "test"
+
+    def test_string(self):
+        assert self.obj.getString() == r"\newcommand{\test}{\rule{1ex}{1ex}\hspace{\stretch{1}}}"
+
+    def test_string_argc(self):
+        assert self.obj_argc.getString() == r"\newcommand{\test}[2]{\rule{1ex}{1ex} #1 \hspace #2 {\stretch{1}}}"
+
+    def __init__(self):
+        self.obj = LatexMacro("test", r"\rule{1ex}{1ex}\hspace{\stretch{1}}")
+        self.obj_argc = LatexMacro("test", r"\rule{1ex}{1ex} #1 \hspace #2 {\stretch{1}}", 2)
 
 
 class TestLatexText:

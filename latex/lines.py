@@ -64,6 +64,27 @@ class LatexCommand(LatexLine):
         self.suffix = str(suffix)
 
 
+class LatexMacro(LatexLine):
+    def getString(self, no_prefix=True):
+        """ Converts the LatexMacro object into a latex macro string (newcommand command) and returns it """
+        buf = "\\newcommand{\\" + self.macro_name + "}"
+        if self.argc and self.argc > 0:
+            buf += "[" + str(self.argc) + "]"
+        buf += "{" + self.definition + "}"
+        if no_prefix:
+            return str(buf)
+        else:
+            return self.prefix + str(buf) + self.suffix
+
+    def __init__(self, macro_name, definition, argc=0, prefix="", suffix=""):
+        self.macro_name = macro_name
+        self.definition = definition
+        self.argc = argc
+        # these are needed when not pretty printing
+        self.prefix = str(prefix)
+        self.suffix = str(suffix)
+
+
 class LatexText(LatexLine):
     def getString(self, no_prefix=True):
         """ Converts the LatexText object into a string and returns it """
