@@ -13,7 +13,6 @@ from . import lines
 
 class LatexEnvironment(lines.LatexLine):
     # TODO: This should probably replace the LatexDocument
-    # TODO: Replace the header and content definitions in LatexDocument with environments.
     def getString(self, no_prefix=True):
         """ Converts the LatexEnvironment object and all objects part of it into a latex string and returns it """
         if self.name:

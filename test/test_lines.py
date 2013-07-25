@@ -1,4 +1,4 @@
-from latex import LatexLine, LatexCommand, LatexText, LatexComment, LatexMacro
+from latex import LatexLine, LatexCommand, LatexText, LatexComment, LatexMacro, LatexEnvironmentMacro
 
 
 class TestLatexLine:
@@ -38,6 +38,25 @@ class TestLatexMacro:
     def __init__(self):
         self.obj = LatexMacro("test", r"\rule{1ex}{1ex}\hspace{\stretch{1}}")
         self.obj_argc = LatexMacro("test", r"\rule{1ex}{1ex} #1 \hspace #2 {\stretch{1}}", 2)
+
+
+class TestLatexEnvironmentMacro:
+    def test_name(self):
+        assert self.obj.macro_name == "test"
+
+    def test_string(self):
+        assert self.obj.getString() == \
+            r"\newenvironment{\test}{\rule{1ex}{1ex}\hspace{\stretch{1}}}{\rule{1ex}{1ex}\vspace{\stretch{1}}}"
+
+    def test_string_argc(self):
+        assert self.obj_argc.getString() == \
+            r"\newenvironment{\test}[2]{#1 \hspace #2 {\stretch{1}}}{#1 \vspace #2 {\stretch{1}}}"
+
+    def __init__(self):
+        self.obj = LatexEnvironmentMacro("test", r"\rule{1ex}{1ex}\hspace{\stretch{1}}",
+                                         r"\rule{1ex}{1ex}\vspace{\stretch{1}}")
+        self.obj_argc = LatexEnvironmentMacro("test", r"#1 \hspace #2 {\stretch{1}}",
+                                              r"#1 \vspace #2 {\stretch{1}}", 2)
 
 
 class TestLatexText:

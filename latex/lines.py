@@ -64,7 +64,6 @@ class LatexCommand(LatexLine):
 
 
 class LatexMacro(LatexLine):
-    # TODO: add environment macros
     def getString(self, no_prefix=True):
         """ Converts the LatexMacro object into a latex macro string (newcommand command) and returns it """
         buf = "\\newcommand{\\" + self.macro_name + "}"
@@ -79,6 +78,29 @@ class LatexMacro(LatexLine):
     def __init__(self, macro_name, definition, argc=0, prefix="", suffix=""):
         self.macro_name = macro_name
         self.definition = definition
+        self.argc = argc
+        # these are needed when not pretty printing
+        self.prefix = str(prefix)
+        self.suffix = str(suffix)
+
+
+class LatexEnvironmentMacro(LatexLine):
+    def getString(self, no_prefix=True):
+        """ Converts the LatexEnvironmentMacro object into a latex macro string (newcommand command) and returns it """
+        buf = "\\newenvironment{\\" + self.macro_name + "}"
+        if self.argc and self.argc > 0:
+            buf += "[" + str(self.argc) + "]"
+        buf += "{" + self.definition_before + "}"
+        buf += "{" + self.definition_after + "}"
+        if no_prefix:
+            return str(buf)
+        else:
+            return self.prefix + str(buf) + self.suffix
+
+    def __init__(self, macro_name, definition_before, definition_after, argc=0, prefix="", suffix=""):
+        self.macro_name = macro_name
+        self.definition_before = definition_before
+        self.definition_after = definition_after
         self.argc = argc
         # these are needed when not pretty printing
         self.prefix = str(prefix)
