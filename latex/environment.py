@@ -12,12 +12,12 @@ from . import lines
 
 
 class LatexEnvironment(lines.LatexLine):
-    # TODO: This should probably replace the LatexDocument
     def getString(self, no_prefix=True):
         """ Converts the LatexEnvironment object and all objects part of it into a latex string and returns it """
+        buf = ""
         if self.name:
-            buf = "\\begin{" + self.name + "}"
-        for l in self.lines:
+            buf += "\\begin{" + self.name + "}" + "\n"
+        for l in self.__lines:
             buf += l.getString(no_prefix)
             buf += "\n"
         if self.name:
@@ -29,25 +29,35 @@ class LatexEnvironment(lines.LatexLine):
 
     def getLines(self):
         """ Returns a list of all lines """
-        return self.lines
+        return self.__lines
+
+    def setLine(self, index, line):
+        """ Set a line with a specific index """
+        if not isinstance(line, lines.LatexLine):
+            return False
+        else:
+            self.__lines[index] = line
+            return True
+
+    def setLines(self, lines):
+        """ Sets the lines to a specific list """
+        if type(lines) == list:
+            self.__lines = lines
+            return True
+        else:
+            return False
 
     def addLine(self, line):
         """ Adds a LatexLine to the LatexEnvironment object """
         if not isinstance(line, lines.LatexLine):
             return False
         else:
-            self.lines.append(line)
+            self.__lines.append(line)
             return True
 
     def __init__(self, name=None, lines=[], prefix="", suffix=""):
         self.name = name  # if name is None, it's the global environment
-        self.lines = lines
-        # compatibility with obsolete LatexDocument
-        self.text_append_prefix = ""
-        self.text_append_suffix = ""
-        self.comment_prefix = "% "
-        self.comment_append_prefix = ""
-        self.comment_append_suffix = ""
+        self.__lines = lines
         # these are needed when not pretty printing
         self.prefix = str(prefix)
         self.suffix = str(suffix)

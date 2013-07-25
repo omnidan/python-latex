@@ -11,6 +11,7 @@ __status__ = "Prototype"
 
 from .document import LatexDocument
 from .lines import LatexCommand, LatexText, LatexComment, LatexMacro, LatexEnvironmentMacro
+from .environment import LatexEnvironment
 import re
 
 
@@ -25,10 +26,13 @@ class LatexParser:
             # document started, that means we are no longer in the header
             if "\\begin{document}" in line:
                 header = False
-            if header:
-                header_buffer.append(line)
+            elif "\\end{document}" in line:
+                header = True
             else:
-                content_buffer.append(line)
+                if header:
+                    header_buffer.append(line)
+                else:
+                    content_buffer.append(line)
         return header_buffer, content_buffer
 
     # noinspection PyUnusedLocal
@@ -170,8 +174,14 @@ class LatexParser:
                 asterisk = False
             return LatexCommand(cmd, opt, adopt, asterisk, prefix, suffix)
 
+    def appendline(self, line):
+        if self.__current_environment:
+            self.__current_environment.addLine(line)
+        else:
+            self.__parse_buffer.append(line)
+
     def __parse(self, tex, keep_empty_lines=False, do_not_concat_text=False):
-        parse_buffer = []
+        self.__parse_buffer = []
         for line in tex:
             # firstly, strip the line to remove whitespace
             nonstripped = line
@@ -184,8 +194,8 @@ class LatexParser:
             # check if the line is empty
             if line == "":
                 if keep_empty_lines:
-                    parse_buffer.append(LatexText(nonstripped))
-                    self.__last_line = parse_buffer[-1]
+                    self.appendline(LatexText(nonstripped))
+                    self.__last_line = self.__parse_buffer[-1]
             else:
                 # now check if command, comment or text
                 if line[0] == '\\':
@@ -198,14 +208,23 @@ class LatexParser:
                         if latex_command.command_name == "newcommand":
                             # this is a LatexMacro, not a LatexCommand
                             latex_macro = self.__matchTeXMacro(line, prefix, suffix)
-                            parse_buffer.append(latex_macro)
+                            self.appendline(latex_macro)
                         elif latex_command.command_name == "newenvironment":
                             # this is a LatexEnvironmentMacro, not a LatexCommand
                             latex_macro = self.__matchTeXEnvironmentMacro(line, prefix, suffix)
-                            parse_buffer.append(latex_macro)
+                            self.appendline(latex_macro)
+                        elif latex_command.command_name == "begin":
+                            # this is a LatexEnvironment, not a LatexCommand
+                            latex_environment = LatexEnvironment(latex_command.command_options)
+                            self.appendline(latex_environment)
+                            self.__current_environment = self.__parse_buffer[-1]
+                        elif latex_command.command_name == "end":
+                            # this is the end of a LatexEnvironment, not a LatexCommand
+                            # TODO: environments inside environments do not work yet
+                            self.__current_environment = None
                         else:
                             latex_command.parseOptions()
-                            parse_buffer.append(latex_command)
+                            self.appendline(latex_command)
                 elif line[0] == "%":
                     # remove first character from line and create the LatexComment object
                     comment = "".join(line[1:]).strip()
@@ -214,7 +233,7 @@ class LatexParser:
                         self.__last_line.append(comment)
                     else:
                         # create new LatexComment object
-                        parse_buffer.append(LatexComment(comment, self.__ld.comment_prefix,
+                        self.appendline(LatexComment(comment, self.__ld.comment_prefix,
                                                          self.__ld.comment_append_prefix,
                                                          self.__ld.comment_append_suffix,
                                                          prefix=prefix, suffix=suffix))
@@ -225,10 +244,10 @@ class LatexParser:
                         self.__last_line.append(line)
                     else:
                         # create new LatexText object
-                        parse_buffer.append(LatexText(line, self.__ld.text_append_prefix, self.__ld.text_append_suffix,
+                        self.appendline(LatexText(line, self.__ld.text_append_prefix, self.__ld.text_append_suffix,
                                                       prefix=prefix, suffix=suffix))
-                self.__last_line = parse_buffer[-1]
-        return parse_buffer
+                self.__last_line = self.__parse_buffer[-1]
+        return self.__parse_buffer
 
     def getResult(self):
         return self.__ld
@@ -236,6 +255,8 @@ class LatexParser:
     def __init__(self, tex, obj=None, keep_empty_lines=False, do_not_concat_text=False):
         # init last_line variable
         self.__last_line = None
+        self.__current_environment = None
+        self.__parse_buffer = []
 
         # parse document into header and content buffer
         header, content = self.__parseDocument(tex)

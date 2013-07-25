@@ -8,85 +8,55 @@ __maintainer__ = "Daniel Bugl"
 __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
-from . import lines
+from . import environment
 
 
 class LatexDocument:
     def getDocument(self, no_prefix=True):
         """ Returns a string that contains the whole document """
-        document_buffer = ""
-        for l in self.getLines():
-            document_buffer += l.getString(no_prefix)
-            document_buffer += "\n"
-        # remove the last newline
-        document_buffer = document_buffer[:-1]
-        return str(document_buffer)
+        return self.__header.getString(no_prefix) + self.__content.getString(no_prefix)
 
     def getLines(self):
         """ Returns a list of all lines """
-        return self.__lines_header + self.__lines_content
+        return self.__header.getLines() + self.__content.getLines()
 
     def getLinesHeader(self):
         """ Returns a list of all lines of the header """
-        return self.__lines_header
+        return self.__header.getLines()
 
     def getLinesContent(self):
         """ Returns a list of all lines of the content """
-        return self.__lines_content
+        return self.__content.getLines()
 
     def addHeaderLine(self, line):
         """ Adds a LatexLine to the LatexDocument object header """
-        if not isinstance(line, lines.LatexLine):
-            return False
-        else:
-            self.__lines_header.append(line)
-            return True
+        return self.__header.addLine(line)
 
     def addContentLine(self, line):
         """ Adds a LatexLine to the LatexDocument object content """
-        if not isinstance(line, lines.LatexLine):
-            return False
-        else:
-            self.__lines_content.append(line)
-            return True
+        return self.__content.addLine(line)
 
     def setHeader(self, header):
         """ Set the LatexDocument header to a specific list """
-        if type(header) == list:
-            self.__lines_header = header
-            return True
-        else:
-            return False
+        return self.__header.setLines(header)
 
     def setContent(self, content):
         """ Set the LatexDocument content to a specific list """
-        if type(content) == list:
-            self.__lines_content = content
-            return True
-        else:
-            return False
+        return self.__content.setLines(content)
 
     def setHeaderLine(self, index, line):
         """ Set a line with a specific index in the LatexDocument header list """
-        if not isinstance(line, lines.LatexLine):
-            return False
-        else:
-            self.__lines_header[index] = line
-            return True
+        return self.__header.setLine(index, line)
 
     def setContentLine(self, index, line):
         """ Set a line with a specific index in the LatexDocument content list """
-        if not isinstance(line, lines.LatexLine):
-            return False
-        else:
-            self.__lines_content[index] = line
-            return True
+        return self.__content.setLine(index, line)
 
     def __init__(self):
+        self.__header = environment.LatexEnvironment()  # global environment
+        self.__content = environment.LatexEnvironment("document")  # document environment
         self.text_append_prefix = ""
         self.text_append_suffix = ""
         self.comment_prefix = "% "
         self.comment_append_prefix = ""
         self.comment_append_suffix = ""
-        self.__lines_header = []
-        self.__lines_content = []

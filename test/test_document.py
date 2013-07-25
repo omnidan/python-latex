@@ -40,5 +40,7 @@ class TestLatexDocument:
         doc.setContent(content)
         assert doc.getDocument() == r"""\head
 headtext
+\begin{document}
 \content
-contenttext"""
+contenttext
+\end{document}"""

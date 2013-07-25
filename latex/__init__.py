@@ -9,5 +9,6 @@ __email__ = "daniel.bugl@touchlay.com"
 __status__ = "Prototype"
 
 from .lines import *
+from .environment import *
 from .document import *
 from .parser import *
