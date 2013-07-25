@@ -86,9 +86,36 @@ class LatexMacro(LatexLine):
 
 
 class LatexEnvironment(LatexLine):
-    pass
-    # TODO: Implement this, this is actually not a single line but a collection of lines,
+    # TODO: This should probably replace the LatexDocument
     # TODO: Replace the header and content definitions in LatexDocument with environments.
+    def getString(self, no_prefix=True):
+        """ Converts the LatexEnvironment object and all objects part of it into a latex string and returns it """
+        if self.name:
+            buf = "\\begin{" + self.name + "}"
+        for l in self.lines:
+            buf += l.getString(no_prefix)
+            buf += "\n"
+        if self.name:
+            buf += "\\end{" + self.name + "}"
+        if no_prefix:
+            return str(buf)
+        else:
+            return self.prefix + str(buf) + self.suffix
+
+    def addLine(self, line):
+        """ Adds a LatexLine to the LatexEnvironment object """
+        if not isinstance(line, lines.LatexLine):
+            return False
+        else:
+            self.lines.append(line)
+            return True
+
+    def __init__(self, name=None, lines=[], prefix="", suffix=""):
+        self.name = name  # if name is None, it's the global environment
+        self.lines = lines
+        # these are needed when not pretty printing
+        self.prefix = str(prefix)
+        self.suffix = str(suffix)
 
 
 class LatexText(LatexLine):
